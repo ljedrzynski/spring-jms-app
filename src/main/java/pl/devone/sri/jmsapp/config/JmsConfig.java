@@ -21,7 +21,7 @@ public class JmsConfig {
     @Bean
     public JmsListenerContainerFactory<?> queueListenerFactory() {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setMessageConverter(messageConverter());
+        factory.setMessageConverter(jacksonJmsMessageConverter());
         return factory;
     }
 
@@ -29,18 +29,16 @@ public class JmsConfig {
     public JmsListenerContainerFactory<?> topicListenerFactory(ConnectionFactory connectionFactory,
                                                                DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setMessageConverter(messageConverter());
         configurer.configure(factory, connectionFactory);
         factory.setPubSubDomain(true);
         return factory;
     }
 
     @Bean
-    public MessageConverter messageConverter() {
+    public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
-        converter.setObjectMapper(objectMapper());
         return converter;
     }
 
@@ -51,5 +49,4 @@ public class JmsConfig {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper;
     }
-
 }

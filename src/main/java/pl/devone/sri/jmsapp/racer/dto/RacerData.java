@@ -1,10 +1,10 @@
-package pl.devone.sri.jmsapp.dto;
+package pl.devone.sri.jmsapp.racer.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @ToString
@@ -15,5 +15,5 @@ public class RacerData {
     private double[] tirePressure;
     private double oilPressure;
     private double speed;
-    private LocalDateTime time;
+    private Date time;
 }
