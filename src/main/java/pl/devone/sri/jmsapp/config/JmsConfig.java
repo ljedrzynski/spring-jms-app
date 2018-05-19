@@ -17,11 +17,15 @@ import javax.jms.ConnectionFactory;
 @Configuration
 public class JmsConfig {
     public static final String RACER_TOPIC = "racer-topic";
+    public static final String RACER_QUEUE = "racer-queue";
+    public static final String PIT_CREW_QUEUE = "pitcrew-queue";
+    public static final String MESSAGE_ROUTER_QUEUE = "message-router-queue";
 
     @Bean
-    public JmsListenerContainerFactory<?> queueListenerFactory() {
+    public JmsListenerContainerFactory<?> queueListenerFactory(ConnectionFactory connectionFactory,
+                                                               DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setMessageConverter(jacksonJmsMessageConverter());
+        configurer.configure(factory, connectionFactory);
         return factory;
     }
 

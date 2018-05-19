@@ -26,7 +26,7 @@ public class JmsAppApplication {
                 Thread.sleep(3000);
                 racer.setEngineTemperature(randomWithRange(60, 100));
                 racer.setOilPressure(randomWithRange(50, 150));
-                racer.setTirePressure(new double[]{randomWithRange(0, 4), randomWithRange(0, 4), randomWithRange(0, 4), randomWithRange(0, 4)});
+                racer.setTirePressure(new double[]{randomWithRange(1, 2), randomWithRange(1, 2), randomWithRange(1, 1.5), randomWithRange(1, 1.5)});
                 racer.setSpeed(randomWithRange(0, 350));
             } catch (InterruptedException e) {
                 e.printStackTrace();

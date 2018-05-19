@@ -1,4 +1,4 @@
-package pl.devone.sri.jmsapp.racer.dto;
+package pl.devone.sri.jmsapp.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

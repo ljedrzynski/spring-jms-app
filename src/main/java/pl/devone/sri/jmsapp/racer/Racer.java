@@ -1,23 +1,25 @@
 package pl.devone.sri.jmsapp.racer;
 
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pl.devone.sri.jmsapp.racer.dto.RacerData;
-import pl.devone.sri.jmsapp.racer.jms.IRacerObserver;
+import pl.devone.sri.jmsapp.config.JmsConfig;
+import pl.devone.sri.jmsapp.dto.Message;
+import pl.devone.sri.jmsapp.dto.RacerData;
 
 import java.util.Date;
-import java.util.List;
 
-@Log4j
+@Slf4j
 @Data
 @Component
 @Scope("prototype")
 public class Racer {
-    private final List<IRacerObserver> observers;
+    private final JmsTemplate jmsTemplate;
     private int racerId;
     private double engineTemperature;
     private double[] tirePressure;
@@ -25,13 +27,17 @@ public class Racer {
     private double speed;
 
     @Autowired
-    public Racer(List<IRacerObserver> observers) {
-        this.observers = observers;
+    public Racer(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
     }
 
-    //    @LogIt
-    @Scheduled(fixedRate = 5000)
-    public void notifyObservers() {
+    @JmsListener(destination = JmsConfig.RACER_QUEUE, containerFactory = "queueListenerFactory")
+    public void onMessage(Message message) {
+        log.info("Racer{}.onMessage=>{}", racerId, message);
+    }
+
+    @Scheduled(fixedRate = 15000)
+    public void notifyCrew() {
         RacerData racerData = new RacerData();
         racerData.setRacerId(racerId);
         racerData.setEngineTemperature(engineTemperature);
@@ -39,6 +45,11 @@ public class Racer {
         racerData.setSpeed(speed);
         racerData.setTirePressure(tirePressure);
         racerData.setTime(new Date());
-        observers.forEach(observer -> observer.update(racerData));
+        jmsTemplate.convertAndSend(JmsConfig.RACER_TOPIC, racerData);
+    }
+
+    @Scheduled(fixedRate = 15000)
+    public void requestPitStop() {
+        jmsTemplate.convertAndSend(JmsConfig.PIT_CREW_QUEUE, new Message(Message.Type.REQUEST_PIT_STOP, null));
     }
 }
