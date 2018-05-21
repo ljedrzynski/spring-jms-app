@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Message {
     public enum Type {
         INFO,
@@ -14,6 +14,8 @@ public class Message {
         WARNING,
         FAILURE
     }
+
     private Type type;
     private String content;
+    private RacerData racerData;
 }

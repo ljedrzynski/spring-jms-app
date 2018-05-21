@@ -7,6 +7,9 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.devone.sri.jmsapp.racer.Racer;
 
+import java.util.concurrent.TimeUnit;
+
+
 @SpringBootApplication
 @EnableScheduling
 @EnableJms
@@ -21,17 +24,19 @@ public class JmsAppApplication {
     private static void go() {
         Racer racer = applicationContext.getBean(Racer.class);
         racer.setRacerId(1);
-        while (true) {
+
+        Runnable task = () -> {
             try {
-                Thread.sleep(3000);
-                racer.setEngineTemperature(randomWithRange(60, 100));
-                racer.setOilPressure(randomWithRange(50, 150));
-                racer.setTirePressure(new double[]{randomWithRange(1, 2), randomWithRange(1, 2), randomWithRange(1, 1.5), randomWithRange(1, 1.5)});
-                racer.setSpeed(randomWithRange(0, 350));
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+            racer.setEngineTemperature(randomWithRange(70, 130));
+            racer.setOilPressure(randomWithRange(60, 150));
+            racer.setTirePressure(new double[]{randomWithRange(1.1, 1.6), randomWithRange(1.1, 1.6), randomWithRange(1.1, 1.5), randomWithRange(1.1, 1.5)});
+            racer.setSpeed(randomWithRange(0, 350));
+        };
+        task.run();
     }
 
     private static double randomWithRange(double min, double max) {

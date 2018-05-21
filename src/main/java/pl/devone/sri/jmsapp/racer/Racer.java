@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pl.devone.sri.jmsapp.config.JmsConfig;
@@ -19,7 +19,7 @@ import java.util.Date;
 @Component
 @Scope("prototype")
 public class Racer {
-    private final JmsTemplate jmsTemplate;
+    private final JmsMessagingTemplate jmsTemplate;
     private int racerId;
     private double engineTemperature;
     private double[] tirePressure;
@@ -27,7 +27,7 @@ public class Racer {
     private double speed;
 
     @Autowired
-    public Racer(JmsTemplate jmsTemplate) {
+    public Racer(JmsMessagingTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
     }
 
@@ -48,8 +48,9 @@ public class Racer {
         jmsTemplate.convertAndSend(JmsConfig.RACER_TOPIC, racerData);
     }
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 30000)
     public void requestPitStop() {
-        jmsTemplate.convertAndSend(JmsConfig.PIT_CREW_QUEUE, new Message(Message.Type.REQUEST_PIT_STOP, null));
+        Message response = jmsTemplate.convertSendAndReceive(JmsConfig.TEMP_QUEUE, new Message(Message.Type.REQUEST_PIT_STOP, null, null), Message.class);
+        log.info("Racer.requestPitStop response: {}", response);
     }
 }

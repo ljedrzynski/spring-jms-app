@@ -18,8 +18,10 @@ import javax.jms.ConnectionFactory;
 public class JmsConfig {
     public static final String RACER_TOPIC = "racer-topic";
     public static final String RACER_QUEUE = "racer-queue";
+    public static final String TEMP_QUEUE = "temp-queue";
     public static final String PIT_CREW_QUEUE = "pitcrew-queue";
     public static final String MESSAGE_ROUTER_QUEUE = "message-router-queue";
+    public static final String REPLY_TO = "jms_replyTo";
 
     @Bean
     public JmsListenerContainerFactory<?> queueListenerFactory(ConnectionFactory connectionFactory,

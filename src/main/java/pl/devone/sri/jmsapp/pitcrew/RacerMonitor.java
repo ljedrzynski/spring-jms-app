@@ -48,8 +48,7 @@ public class RacerMonitor {
                 }
             }
         }
-
-        return new Message(failure ? Message.Type.FAILURE : Message.Type.WARNING, stringBuilder.toString());
+        return new Message(failure ? Message.Type.FAILURE : Message.Type.WARNING, stringBuilder.toString(), racerData);
     }
 
     private boolean between(double i, double minValueInclusive, double maxValueInclusive) {
