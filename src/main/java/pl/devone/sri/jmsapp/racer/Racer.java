@@ -33,7 +33,7 @@ public class Racer {
 
     @JmsListener(destination = JmsConfig.RACER_QUEUE, containerFactory = "queueListenerFactory")
     public void onMessage(Message message) {
-        log.info("Racer{}.onMessage=>{}", racerId, message);
+        log.info("Racer{}.onMessage => {}", racerId, message);
     }
 
     @Scheduled(fixedRate = 15000)
@@ -51,6 +51,6 @@ public class Racer {
     @Scheduled(fixedRate = 30000)
     public void requestPitStop() {
         Message response = jmsTemplate.convertSendAndReceive(JmsConfig.TEMP_QUEUE, new Message(Message.Type.REQUEST_PIT_STOP, null, null), Message.class);
-        log.info("Racer.requestPitStop response: {}", response);
+        log.info("Racer{}.requestPitStop => response: {}", racerId, response);
     }
 }

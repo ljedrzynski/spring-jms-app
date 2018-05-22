@@ -18,7 +18,7 @@ public class MessageRouter {
 
     @JmsListener(destination = JmsConfig.MESSAGE_ROUTER_QUEUE, containerFactory = "queueListenerFactory")
     public void onMessage(Message message) {
-        log.info("MessageRouter.onMessage=>{}", message);
+        log.info("MessageRouter.onMessage => {}", message);
         jmsTemplate.convertAndSend(JmsConfig.RACER_QUEUE, message);
         if (message.getType().equals(Message.Type.FAILURE)) {
             jmsTemplate.convertAndSend(JmsConfig.PIT_CREW_QUEUE, message);

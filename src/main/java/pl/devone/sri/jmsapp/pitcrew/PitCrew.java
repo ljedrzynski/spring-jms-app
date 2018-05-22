@@ -23,9 +23,8 @@ public class PitCrew {
 
     @JmsListener(destination = JmsConfig.TEMP_QUEUE, containerFactory = "queueListenerFactory")
     public void onMessage(Message message, MessageHeaders headers) {
-        log.info("PitCrew.onMessage=>{}", message);
+        log.info("PitCrew.onMessage => {}", message);
         if (message.getType().equals(Message.Type.REQUEST_PIT_STOP)) {
-            log.info("PitCrew.=> Requesting pit stop.");
             Message response = new Message();
             response.setType(Message.Type.INFO);
             response.setContent("Ok");
